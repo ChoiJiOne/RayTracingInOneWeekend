@@ -9,5 +9,6 @@
 ## 요구 사항
 - Windows 10/11 Home/Pro
 - [CMake](https://cmake.org/)
+  - CMake >= 3.30
 - [Git](https://git-scm.com/)
 - [Visual Studio 2022](https://visualstudio.microsoft.com/ko/downloads/)
