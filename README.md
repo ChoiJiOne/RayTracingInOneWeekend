@@ -13,5 +13,5 @@
 - [Visual Studio 2022](https://visualstudio.microsoft.com/ko/downloads/)
 
 ## 목차
-- [01.Overview](./Docs/Chapter01.md)
+- [01. Overview](./Docs/Chapter01.md)
 - [02. Output an Image](.//Docs/Chapter02.md)
