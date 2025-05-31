@@ -27,7 +27,7 @@ Json::Value LoadConfigFile(const std::string& path)
 	return root;
 }
 
-void GetConfigValue(const Json::Value& root, const std::string& key, int& outValue)
+void GetConfigValue(const Json::Value& root, const std::string& key, int32_t& outValue)
 {
 	if (!root.isMember(key))
 	{

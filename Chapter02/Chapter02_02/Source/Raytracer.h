@@ -1,6 +1,9 @@
 #pragma once
 
 #include <string>
+#include <vector>
+
+#include <json/json.h>
 
 #include "Macro.h"
 
@@ -18,7 +21,13 @@ public:
 	void Export();
 
 private:
-	std::string _configPath;
-	int _imageWidth;
-	int _imageHeight;
+	void LoadConfig();
+
+private:
+	int32_t _imageWidth = 0;
+	int32_t _imageHeight = 0;
+	int32_t _imageChannel = 0;
+	std::vector<uint8_t> _imageBuffer;
+	std::string _outputFileName;
+	std::string _outputFileExtension;
 };
