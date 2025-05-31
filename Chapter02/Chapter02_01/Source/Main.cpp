@@ -2,16 +2,17 @@
 
 int main(void)
 {
-	int imageWidth = 256;
-	int imageHeight = 256;
+	int image_width = 256;
+	int image_height = 256;
 
-	std::cout << "P3\n" << imageWidth << ' ' << imageHeight << "\n255\n";
-	for (int row = 0; row < imageHeight; ++row)
+	std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+
+	for (int j = 0; j < image_height; ++j)
 	{
-		for (int col = 0; col < imageWidth; ++col)
+		for (int i = 0; i < image_width; ++i)
 		{
-			double r = static_cast<double>(col) / static_cast<double>(imageWidth - 1);
-			double g = static_cast<double>(row) / static_cast<double>(imageHeight - 1);
+			double r = static_cast<double>(i) / static_cast<double>(image_width - 1);
+			double g = static_cast<double>(j) / static_cast<double>(image_height - 1);
 			double b = 0.0;
 
 			int ir = static_cast<int>(255.999 * r);
