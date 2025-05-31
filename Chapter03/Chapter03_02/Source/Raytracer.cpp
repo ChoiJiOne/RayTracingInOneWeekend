@@ -1,3 +1,4 @@
+#include <chrono>
 #include <iostream>
 
 #include <stb_image_write.h>
@@ -21,6 +22,8 @@ void Raytracer::Initialize()
 
 void Raytracer::Run()
 {
+	std::chrono::steady_clock::time_point startTime = std::chrono::steady_clock::now();
+
 	for (int y = 0; y < _image->GetHeight(); ++y)
 	{
 		for (int x = 0; x < _image->GetWidth(); ++x)
@@ -34,6 +37,10 @@ void Raytracer::Run()
 			_image->SetPixel(x, y, pixelColor);
 		}
 	}
+
+	std::chrono::steady_clock::time_point endTime = std::chrono::steady_clock::now();
+	std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(endTime - startTime);
+	std::cout << "RAYTRACER ELAPSED TIME: " << duration.count() << " ms" << std::endl;
 }
 
 void Raytracer::Export()
