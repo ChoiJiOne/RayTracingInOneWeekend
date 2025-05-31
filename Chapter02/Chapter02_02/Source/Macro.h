@@ -8,3 +8,6 @@ TypeName(const TypeName&) = delete;           \
 TypeName& operator=(TypeName&&) = delete;     \
 TypeName& operator=(const TypeName) = delete;
 #endif
+
+// C#의 nameof 연산자와 유사한 기능을 수행하는 매크로
+#define NAMEOF(x) #x
