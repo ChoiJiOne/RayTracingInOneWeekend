@@ -12,6 +12,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
 set(CHAPTER_02 "Chapter02")
 set(CHAPTER_03 "Chapter03")
+set(CHAPTER_04 "Chapter04")
 
 add_subdirectory(${CHAPTER_02})
 add_subdirectory(${CHAPTER_03})
+add_subdirectory(${CHAPTER_04})
