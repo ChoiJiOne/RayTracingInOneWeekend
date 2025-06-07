@@ -1,10 +1,5 @@
-# [Ray Tracing in One Weekend - The Book Series](https://raytracing.github.io/)
-- `Ray Tracing in One Weekend - The Book Series` 실습 코드 저장소입니다.
-
-## Book Series
-- [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
-- [Ray Tracing: The Next Week](https://raytracing.github.io/books/RayTracingTheNextWeek.html)
-- [Ray Tracing: The Rest of Your Life](https://raytracing.github.io/books/RayTracingTheRestOfYourLife.html)
+# [Ray Tracing in One Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html)
+- `Ray Tracing in One Weekend` 실습 코드 저장소입니다.
 
 ## Content
 - Chapter01. Overview
