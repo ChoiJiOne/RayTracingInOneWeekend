@@ -8,7 +8,7 @@
 - [Chapter04. Rays, a Simple Camera, and Background](./Chapter04/)
 - [Chapter05. Adding a Sphere](./Chapter05/)
 - [Chapter06. Surface Normals and Multiple Objects](./Chapter06/)
-- Chapter07. Moving Camera Code Into Its Own Class
+- [Chapter07. Moving Camera Code Into Its Own Class](./Chapter07/)
 - Chapter08. Antialiasing
 - Chapter09. Diffuse Materials
 - Chapter10. Metal
