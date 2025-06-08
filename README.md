@@ -13,6 +13,6 @@
 - [Chapter09. Diffuse Materials](./Chapter09/)
 - [Chapter10. Metal](./Chapter10/)
 - [Chapter11. Dielectrics](./Chapter11/)
-- Chapter12. Positionable Camera
+- [Chapter12. Positionable Camera](./Chapter12/)
 - Chapter13. Defocus Blur
 - Chapter14. Where Next?

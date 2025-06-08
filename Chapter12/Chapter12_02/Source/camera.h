@@ -37,6 +37,10 @@ public:
 private:
 	void initialize()
 	{
+		_lookfrom = point3(-2.0, 2.0, 1.0);
+		_lookat = point3(0.0, 0.0, -1.0);
+		_vup = vec3(0.0, 1.0, 0.0);
+		
 		_aspect_ratio = 16.0 / 9.0;
 		_image_width = 400;
 		_image_height = static_cast<int>(static_cast<double>(_image_width) / _aspect_ratio);
@@ -44,19 +48,24 @@ private:
 
 		_pixel_samples_scale = 1.0 / _samples_per_pixel;
 
-		double focal_length = 1.0;
+		_center = _lookfrom;
+
+		double focal_length = (_lookfrom - _lookat).length();
 		double theta = degree_to_radians(_vfov);
 		double h = std::tan(theta / 2.0);
 		double viewport_height = 2.0 * h * focal_length;
 		double viewport_width = viewport_height * (static_cast<double>(_image_width) / static_cast<double>(_image_height));
-		_center = point3(0.0, 0.0, 0.0);
+		
+		_w = unit_vector(_lookfrom - _lookat);
+		_u = unit_vector(cross(_vup, _w));
+		_v = cross(_w, _u);
 
-		vec3 viewport_u = vec3(viewport_width, 0.0, 0.0);
-		vec3 viewport_v = vec3(0.0, -viewport_height, 0.0);
+		vec3 viewport_u = viewport_width * _u;
+		vec3 viewport_v = viewport_height * -_v;
 		_pixel_delta_u = viewport_u / static_cast<double>(_image_width);
 		_pixel_delta_v = viewport_v / static_cast<double>(_image_height);
 
-		vec3 viewport_upper_left = _center - vec3(0.0, 0.0, focal_length) - viewport_u / 2.0 - viewport_v / 2.0;
+		vec3 viewport_upper_left = _center - (focal_length * _w) - viewport_u / 2.0 - viewport_v / 2.0;
 		_pixel00_loc = viewport_upper_left + 0.5 * (_pixel_delta_u + _pixel_delta_v);
 	}
 
@@ -109,7 +118,15 @@ private:
 	int _samples_per_pixel = 100;
 	double _pixel_samples_scale = 0.0;
 	int _max_depth = 50;
-	double _vfov = 90.0;
+	
+	double _vfov = 20.0;
+	point3 _lookfrom = point3(0.0, 0.0, 0.0);
+	point3 _lookat = point3(0.0, 0.0, -1.0);
+	vec3 _vup = vec3(0.0, 1.0, 0.0);
+	vec3 _u;
+	vec3 _v;
+	vec3 _w;
+
 	point3 _center;
 	point3 _pixel00_loc;
 	vec3 _pixel_delta_u;
