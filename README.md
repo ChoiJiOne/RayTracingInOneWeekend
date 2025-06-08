@@ -9,10 +9,10 @@
 - [Chapter05. Adding a Sphere](./Chapter05/)
 - [Chapter06. Surface Normals and Multiple Objects](./Chapter06/)
 - [Chapter07. Moving Camera Code Into Its Own Class](./Chapter07/)
-- Chapter08. Antialiasing
-- Chapter09. Diffuse Materials
-- Chapter10. Metal
-- Chapter11. Dielectrics
+- [Chapter08. Antialiasing](./Chapter08/)
+- [Chapter09. Diffuse Materials](./Chapter09/)
+- [Chapter10. Metal](./Chapter10/)
+- [Chapter11. Dielectrics](./Chapter11/)
 - Chapter12. Positionable Camera
 - Chapter13. Defocus Blur
 - Chapter14. Where Next?
