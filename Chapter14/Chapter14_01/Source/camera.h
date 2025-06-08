@@ -37,16 +37,17 @@ public:
 private:
 	void initialize()
 	{
-		_lookfrom = point3(-2.0, 2.0, 1.0);
-		_lookat = point3(0.0, 0.0, -1.0);
+		_lookfrom = point3(13.0, 2.0, 3.0);
+		_lookat = point3(0.0, 0.0, 0.0);
 		_vup = vec3(0.0, 1.0, 0.0);
-		_defocus_angle = 10.0;
-		_focus_dist = 3.4;
+		_defocus_angle = 0.6;
+		_focus_dist = 10.0;
 		
 		_aspect_ratio = 16.0 / 9.0;
-		_image_width = 400;
+		_image_width = 1200;
 		_image_height = static_cast<int>(static_cast<double>(_image_width) / _aspect_ratio);
 		_image_height = std::max(1, _image_height);
+		_samples_per_pixel = 500;
 
 		_pixel_samples_scale = 1.0 / _samples_per_pixel;
 
