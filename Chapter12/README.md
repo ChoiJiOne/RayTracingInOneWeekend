@@ -1,28 +1,95 @@
 # Chapter12. Positionable Camera
-- 카메라는 시야각(Field of View)과 위치, 방향 등을 조정할 수 있는 객체
-- 디버깅이 어렵기 때문에 점진적으로 구현하며, 수직 시야각(vertical FOV)을 기준으로 설정
 
-## 시야각(Field of View, FOV) 설정
-- vfov: 수직 시야각 (단위: 도 → 내부적으로 라디안으로 변환)
-- 시야각에 따라 화면 확대/축소 효과가 발생
-- 카메라에서 뷰포트로의 거리에 따라 뷰포트 크기(viewport_height, viewport_width)가 결정
+## 기존 카메라의 한계
+- 지금까지 카메라는 항상 (0,0,0)에서 (0,0,-1) 방향만 봄
+- 필요한 개선사항
+    - 시점 위치 조정
+    - 시점 방향 조정
+    - 시야각 조정 (Field of View)
+
+## 수직 시야각 (Vertical Field of View)
+- 수직 FOV를 기반으로 Viewport 크기 계산
+    $$
+    h = \tan\left(\frac{\theta}{2}\right)
+    $$
+
+    $$
+    \text{viewportHeight} = 2 \cdot h \cdot \text{focalLength}
+    $$
+
+    $$
+    \text{viewportWidth} = \text{viewportHeight} \cdot \frac{\text{imageWidth}}{\text{imageHeight}}
+    $$
+- focal length는 기본값 1.0 사용 가능
+
+## 카메라 파라미터 추가
 
 ```CPP
-auto theta = degrees_to_radians(vfov);
-auto h = std::tan(theta / 2);
-auto viewport_height = 2 * h * focal_length;
+double vfov = 90;            // Vertical Field of View (in degrees)
+point3 lookfrom = (0,0,0);   // 카메라 위치
+point3 lookat = (0,0,-1);    // 바라보는 지점
+vec3 vup = (0,1,0);          // 월드 업 벡터
 ```
-## 카메라 방향 설정
-- 카메라 위치: `lookfrom`
-- 카메라가 바라보는 지점: `lookat`
-- 카메라 기준 위쪽 방향: `vup` (보통 (0,1,0) 사용)
-- 이 세 벡터를 통해 카메라 기준 직교 좌표계(u, v, w)를 정의:
-    - `w`: 시선 반대 방향 단위 벡터
-    - `u`: 오른쪽 방향 단위 벡터
-    - `v`: 위쪽 방향 단위 벡터
+
+## 카메라 좌표계 생성 (Orthonormal Basis)
+- 카메라 기준 좌표축 (u, v, w)
+    $$
+    w = \frac{lookfrom - lookat}{\|lookfrom - lookat\|}
+    $$
+
+    $$
+    u = \frac{vup \times w}{\|vup \times w\|}
+    $$
+
+    $$
+    v = w \times u
+    $$
+    - w: 바라보는 방향 반대
+    - u: 카메라 오른쪽
+    - v: 카메라 위쪽
+
+## Viewport 위치 계산
 
 ```CPP
-w = unit_vector(lookfrom - lookat);
-u = unit_vector(cross(vup, w));
-v = cross(w, u);
+vec3 viewport_u = viewport_width * u;
+vec3 viewport_v = viewport_height * -v;
+pixel_delta_u = viewport_u / image_width;
+pixel_delta_v = viewport_v / image_height;
+
+auto viewport_upper_left = center - focal_length * w - viewport_u/2 - viewport_v/2;
+pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+```
+
+## 새로운 카메라 클래스 구조
+
+```CPP
+class camera 
+{
+public:
+    double vfov = 90;
+    point3 lookfrom = point3(0,0,0);
+    point3 lookat = point3(0,0,-1);
+    vec3 vup = vec3(0,1,0);
+    ...
+private:
+    vec3 u, v, w;
+    void initialize() { ... }
+};
+```
+
+## 새로운 카메라 위치로 테스트
+- 시점 이동:
+
+```CPP
+cam.lookfrom = point3(-2, 2, 1);
+cam.lookat = point3(0, 0, -1);
+cam.vup = vec3(0, 1, 0);
+cam.vfov = 90;
+```
+
+## Zoom (FOV 변경)
+- 시야각 축소 (줌 인):
+    - FOV가 좁아질수록 더 줌인된 느낌
+```cpp
+cam.vfov = 20;
 ```
