@@ -25,9 +25,9 @@ $$\cos \theta = \mathbf{a} \cdot \mathbf{b}$$
 
 ## 굴절 벡터 계산 (벡터 수식)
 - 굴절 벡터:
-    $$\mathbf{r_\perp} = \frac{\eta}{\eta'} (\mathbf{v} + \cos\theta \cdot \mathbf{n})$$  
-    $$\mathbf{r_\parallel} = -\sqrt{1 - |\mathbf{r_\perp}|^2} \cdot \mathbf{n}$$  
-    $$\mathbf{refracted} = \mathbf{r_\perp} + \mathbf{r_\parallel}$$  
+    - $$\mathbf{r_\perp} = \frac{\eta}{\eta'} (\mathbf{v} + \cos\theta \cdot \mathbf{n})$$  
+    - $$\mathbf{r_\parallel} = -\sqrt{1 - |\mathbf{r_\perp}|^2} \cdot \mathbf{n}$$  
+    - $$\mathbf{refracted} = \mathbf{r_\perp} + \mathbf{r_\parallel}$$  
 - C++ 함수 구현:
     ```CPP
     vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) 
@@ -80,8 +80,8 @@ private:
 
 ## Schlick 근사 (반사율 근사)
 - 각도에 따라 반사 확률 변동 → 반사율 근사 적용
-    $$R(\theta) = R_0 + (1 - R_0)(1 - \cos\theta)^5$$  
-    $$R_0 = \left( \frac{1 - \eta}{1 + \eta} \right)^2$$  
+    - $$R(\theta) = R_0 + (1 - R_0)(1 - \cos\theta)^5$$  
+    - $$R_0 = \left( \frac{1 - \eta}{1 + \eta} \right)^2$$  
 - C++ 구현:
     ```CPP
     static double reflectance(double cosine, double refraction_index) 
