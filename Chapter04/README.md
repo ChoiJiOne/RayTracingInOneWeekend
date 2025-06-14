@@ -1,53 +1,102 @@
 # Chapter04. Rays, Camera, and Background
-- 이 프로젝트는 레이 트레이싱(ray tracing) 기반으로, 픽셀마다 레이를 발사하고 해당 방향의 색상을 계산하여 이미지를 생성
 
-## `Ray` class
-- `ray`: 원점(origin)과 방향(direction)을 기반으로 정의
-- `at(t) 함수`: 주어진 t 값에서의 위치를 반환
+## 핵심 개념 요약
+- 광선(ray) 정의: 𝑃(𝑡) = 𝐴 + 𝑡 ⋅ 𝑏
+	- 𝐴: ray origin
+	- 𝑏: ray direction
+	- 𝑡: scalar parameter (거리)
+- 핵심 목표:
+	= scene에 광선을 쏘고(ray tracing)
+	- 어떤 색깔을 볼지 계산
+
+## `ray` 클래스 정의
 
 ```CPP
-class ray
+class ray 
 {
 public:
-	ray() {}
-	ray(const point3& origin, const vec3& direction)
-		: _origin(origin), _direction(direction) {}
+    ray() {}
+    ray(const point3& origin, const vec3& direction)
+        : orig(origin), dir(direction) {}
 
-	const point3& origin() const { return _origin; }
-	const vec3& direction() const { return _direction; }
+    const point3& origin() const { return orig; }
+    const vec3& direction() const { return dir; }
 
-	point3 at(double t) const
+    point3 at(double t) const 
 	{
-		return _origin + (t * _direction);
-	}
+        return orig + t * dir;
+    }
 
 private:
-	point3 _origin;
-	vec3 _direction;
+    point3 orig;
+    vec3 dir;
 };
 ```
+- `at(t)`: 광선 상의 t 위치 계산
+- 모든 ray tracing 시스템의 핵심 구성 요소
 
-## 카메라 설정
-- Aspect Ratio: 16:9 기준 (image_width / image_height)
-- Viewport: 2.0 높이를 기준으로 계산된 가상 직사각형
-- 초점 거리(focal_length): 1.0
-- 카메라 위치(camera_center): (0,0,0)
-- 픽셀 간격: pixel_delta_u, pixel_delta_v 계산
-- 픽셀 시작 위치: pixel00_loc 기준으로 이미지 전 픽셀 위치 계산
+## 카메라 및 이미지 설정
+- 해상도 & 비율 설정
+	```CPP
+	auto aspect_ratio = 16.0 / 9.0;
+	int image_width = 400;
 
-## 배경 색상 그라디언트
-- 레이의 방향 벡터를 정규화한 후 Y축 값을 기준으로 하늘색(파란색)과 흰색을 선형 보간(LERP)
-- ray_color() 함수 구현 예:
+	int image_height = int(image_width / aspect_ratio);
+	image_height = (image_height < 1) ? 1 : image_height;
+	```
+- viewport 정의
+	```CPP
+	auto viewport_height = 2.0;
+	auto viewport_width = viewport_height * (double(image_width)/image_height);
+	auto focal_length = 1.0;
+
+	auto camera_center = point3(0, 0, 0);
+	```
+- 뷰포트 벡터 계산
+	```CPP
+	auto viewport_u = vec3(viewport_width, 0, 0);
+	auto viewport_v = vec3(0, -viewport_height, 0);
+	auto pixel_delta_u = viewport_u / image_width;
+	auto pixel_delta_v = viewport_v / image_height;
+
+	auto viewport_upper_left =
+		camera_center - vec3(0, 0, focal_length) - viewport_u/2 - viewport_v/2;
+
+	auto pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
+	```
+- 주의사항:
+	- 이미지 좌표계는 y축이 반대임 (위에서 아래로 증가)
+
+## 메인 루프
 
 ```CPP
-color ray_color(const ray& r) 
+for (int j = 0; j < image_height; j++) 
 {
-    vec3 unit_direction = unit_vector(r.direction());
-    auto a = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+    std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+    for (int i = 0; i < image_width; i++) 
+	{
+        auto pixel_center = pixel00_loc + (i * pixel_delta_u) + (j * pixel_delta_v);
+        auto ray_direction = pixel_center - camera_center;
+        ray r(camera_center, ray_direction);
+
+        color pixel_color = ray_color(r);
+        write_color(std::cout, pixel_color);
+    }
 }
 ```
 
-## 출력 결과
-- 파란색(하늘색)에서 흰색으로 이어지는 수직 + 수평 그라디언트 배경이 출력됨
-- 이미지 출력은 PPM 포맷으로, `> image.ppm` 형식으로 저장
+## 배경 그라데이션 렌더링
+- lerp (선형 보간): blended = (1 − 𝑎) ⋅ start + 𝑎 ⋅ end
+- `ray_color()` 구현
+	```CPP
+	color ray_color(const ray& r) 
+	{
+		vec3 unit_direction = unit_vector(r.direction());
+		auto a = 0.5 * (unit_direction.y() + 1.0);
+		return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
+	}
+	```
+- 결과:
+	- 위 → 흰색
+	- 아래 → 파란색
+	- 하늘 그라데이션 구현
