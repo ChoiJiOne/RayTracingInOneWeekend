@@ -78,9 +78,7 @@ bool near_zero() const
 ## Metal 재질 기본 반사 구현
 - 반사 광선은 스펙큘러 반사:
     - 반사 공식 사용
-    $$
-    \mathbf{R} = \mathbf{V} - 2(\mathbf{V} \cdot \mathbf{N}) \mathbf{N}
-    $$
+    $$\mathbf{R} = \mathbf{V} - 2(\mathbf{V} \cdot \mathbf{N}) \mathbf{N}$$
 - 반사 함수
     ```CPP
     vec3 reflect(const vec3& v, const vec3& n)
