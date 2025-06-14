@@ -13,13 +13,12 @@
 ## 수식 요약
 
 $$
-\text{final\_color} = \frac{1}{N} \sum_{i=1}^{N} \text{ray\_color}(r_i)
+\mathrm{final\ color} = \frac{1}{N} \sum_{i=1}^{N} \mathrm{ray\ color}(r_i)
 $$
 
 $$
 \text{offset} = (\text{random()} - 0.5, \text{random()} - 0.5)
 $$
-
 
 ## 핵심 코드
 
