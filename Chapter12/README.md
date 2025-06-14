@@ -9,17 +9,10 @@
 
 ## 수직 시야각 (Vertical Field of View)
 - 수직 FOV를 기반으로 Viewport 크기 계산
-    $$
-    h = \tan\left(\frac{\theta}{2}\right)
-    $$
+    $$h = \tan\left(\frac{\theta}{2}\right)$$
+    $$\text{viewportHeight} = 2 \cdot h \cdot \text{focalLength}$$
 
-    $$
-    \text{viewportHeight} = 2 \cdot h \cdot \text{focalLength}
-    $$
-
-    $$
-    \text{viewportWidth} = \text{viewportHeight} \cdot \frac{\text{imageWidth}}{\text{imageHeight}}
-    $$
+    $$\text{viewportWidth} = \text{viewportHeight} \cdot \frac{\text{imageWidth}}{\text{imageHeight}}$$
 - focal length는 기본값 1.0 사용 가능
 
 ## 카메라 파라미터 추가
@@ -33,17 +26,9 @@ vec3 vup = (0,1,0);          // 월드 업 벡터
 
 ## 카메라 좌표계 생성 (Orthonormal Basis)
 - 카메라 기준 좌표축 (u, v, w)
-    $$
-    w = \frac{lookfrom - lookat}{\|lookfrom - lookat\|}
-    $$
-
-    $$
-    u = \frac{vup \times w}{\|vup \times w\|}
-    $$
-
-    $$
-    v = w \times u
-    $$
+    $$w = \frac{lookfrom - lookat}{\|lookfrom - lookat\|}$$
+    $$u = \frac{vup \times w}{\|vup \times w\|}$$
+    $$v = w \times u$$
     - w: 바라보는 방향 반대
     - u: 카메라 오른쪽
     - v: 카메라 위쪽
