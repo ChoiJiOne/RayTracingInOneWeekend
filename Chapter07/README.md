@@ -8,12 +8,6 @@
 
 ## `camera` 클래스 구조
 
-- `public` 메서드:
-  - `render(const hittable&)` : 렌더링 실행
-- `private` 메서드:
-  - `initialize()` : 내부 계산 및 초기화 수행 (자동 호출됨)
-  - `get_ray()`, `ray_color()` : 헬퍼 함수
-
 ```cpp
 #pragma once
 
@@ -44,6 +38,15 @@ private:
 	vec3 _pixel_delta_v;
 };
 ```
+- `public` 메서드:
+	- 렌더링 함수: `render()`
+		- 메인 루프 및 픽셀별 Ray 생성
+- `private` 메서드:
+	- 초기화 함수: `initialize()`
+		- 화면 사이즈 및 뷰포트 계산
+	- 색상 계산: `ray_color()`
+		- 히트 확인 후 색상 결정
+
 
 ## `main()` 함수
 - `main()` 함수는 간결하게 유지
