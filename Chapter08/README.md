@@ -1,15 +1,68 @@
 # Chapter08. Antialiasing
-- 렌더링된 이미지 가장자리에서 보이는 계단 현상(aliasing) 은 단일 샘플(point sampling)로 인해 발생
-- 현실 세계는 연속적인 해상도를 가지며, 인간의 눈은 빛을 자연스럽게 영역 단위로 통합(integrate) 하여 부드러운 경계를 인식
-- 이를 구현하기 위해 픽셀 중심이 아닌 주변 영역에서 여러 개의 샘플(ray) 을 무작위로 생성해 평균 처리
-- 샘플링은 픽셀 중심에서 네 방향 이웃 픽셀의 절반까지 포함하는 정사각형 영역 내에서 수행
-- 최종 색상은 각 샘플의 결과를 누적한 후, 샘플 수로 나눈 평균값을 사용해 계산하며, 색상 범위는 [0,1]로 클램핑(clamping)
+- 계단 현상(Aliasing): 픽셀 중심에서만 샘플링 시 발생하는 경계선의 계단형 왜곡
+- 안티앨리어싱(Antialiasing): 픽셀 내 여러 지점 샘플 → 평균화 → 부드러운 경계
+- 실제 세계는 연속적임 → 다수 샘플로 근사 필요
+- Point Sampling: 픽셀 중심 1점만 샘플 → 노이즈 발생
+- Supersampling: 픽셀 영역 내 랜덤 다중 샘플링 → 결과 평균 → 노이즈 감소
 
-## Random Sampling
-- 무작위 샘플 생성을 위해 `random_double()`함수를 사용하며, `[0,1)` 또는 `[min,max)` 범위의 실수값을 생성
-- 전통적인 `std::rand()` 외에도 C++ `<random>` 헤더 기반 구현 지원
-- 픽셀 위치 내 무작위 샘플을 생성하는 `sample_square()`는 정사각형 내 난수 위치 반환
+## 샘플링 전략
+- 각 픽셀을 주변 사각형 영역에서 다중 샘플링
+- 샘플 위치는 픽셀 내에서 무작위 오프셋 사용
+- 샘플 개수: `samples_per_pixel`
 
-## Camera Sampling
-- 카메라는 `samples_per_pixel` 설정을 통해 픽셀당 샘플 개수 제어
-- 각 픽셀에 대해 샘플 수만큼 ray를 발사하고, 결과 색상을 평균 처리하여 보다 부드럽고 현실적인 이미지 생성
+## 수식 요약
+
+$$
+\text{final\_color} = \frac{1}{N} \sum_{i=1}^{N} \text{ray\_color}(r_i)
+$$
+
+$$
+\text{offset} = (\text{random()} - 0.5, \text{random()} - 0.5)
+$$
+
+
+## 핵심 코드
+
+- 랜덤 유틸리티
+    ```CPP
+    inline double random_double() 
+    {
+        static std::uniform_real_distribution<double> distribution(0.0, 1.0);
+        static std::mt19937 generator;
+        return distribution(generator);
+    }
+    ```
+- 샘플링 오프셋
+    ```CPP
+    vec3 sample_square() 
+    {
+        return vec3(random_double() - 0.5, random_double() - 0.5, 0);
+    }
+    ```
+- 광선 생성 (다중 샘플 적용)
+    ```CPP
+    ray get_ray(int i, int j) 
+    {
+        auto offset = sample_square();
+        auto pixel_sample = pixel00_loc
+            + ((i + offset.x()) * pixel_delta_u)
+            + ((j + offset.y()) * pixel_delta_v);
+
+        return ray(center, pixel_sample - center);
+    }
+    ```
+- 색상 출력 (클램프)
+    ```CPP
+    double clamp(double x, double min, double max) 
+    {
+        if (x < min) return min;
+        if (x > max) return max;
+        return x;
+    }
+    ```
+- 평균 적용
+    ```CPP
+    pixel_color += ray_color(r, world);
+    final_color = pixel_color / samples_per_pixel;
+    ```
+
